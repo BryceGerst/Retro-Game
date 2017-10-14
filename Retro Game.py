@@ -16,14 +16,8 @@ crosshair = pygame.transform.scale(crosshair, (75, 75))
 
 
 
-def draw_ship(screen, x, y):
-    screen.blit(newShip,(x, y))
-def draw_badBoy(screen, x, y):
-    screen.blit(badBoy, (x, y))
-def draw_smallBoy(screen, x, y):
-    screen.blit(smallBoy, (x, y))
-def draw_crosshair(screen, x, y):
-    screen.blit(crosshair, (x, y))
+def draw_obj(obj, x, y):
+    screen.blit(obj, (x, y))
 
 pygame.init()
 screenW = 1280
@@ -106,7 +100,7 @@ while True:
 
     screen.fill([0,0,0])
     newShip = pygame.transform.rotate(ship, pointAng)
-    draw_crosshair(screen, mouseX - 25, mouseY - 25)
+    draw_obj(crosshair, mouseX - 25, mouseY - 25)
     if pointAng == 0 or pointAng == 360:
         print("0 or 360")
         # draw_ship(screen, playerX - 75/2, playerY - 75/2)
@@ -124,7 +118,7 @@ while True:
         print("270")
     elif pointAng > 270 and pointAng < 360:
         print("between 270 and 360")
-    draw_ship(screen, playerX - 75, playerY - 75/2)
+    draw_obj(newShip, playerX - 75, playerY - 75/2)
     pygame.display.update()
     clock.tick(60)
     

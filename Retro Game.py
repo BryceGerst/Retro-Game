@@ -8,15 +8,20 @@ shipW = int((75/1920) * screenW)
 shipH = int((75/1080) * screenH)
 ship = pygame.image.load("ship.png")
 ship = pygame.transform.scale(ship, (shipW ,shipH))
+laserW = int(1/64 * screenW)
+laserH = int(1/216 * screenH)
 
 badBoy = pygame.image.load("badboy.png")
 #badBoy = pygame.transform.scale(badBoy, (something,something))
 
 smallBadBoy = pygame.image.load("smallbadboy.png")
-#smallBadBoy = pygame.transform.scale(smallBadBoy, (something,something))
+smallBadBoy = pygame.transform.scale(smallBadBoy, (shipW, shipH))
 
 crosshair = pygame.image.load("crosshair.png")
 crosshair = pygame.transform.scale(crosshair, (shipW, shipH))
+
+laser = pygame.image.load("laser.png")
+laser = pygame.transform.scale(laser, (laserW, laserH))
 
 def draw_obj(obj, x, y):
     screen.blit(obj, (x, y))
@@ -41,6 +46,10 @@ left = 0
 right = 0
 mousedown = 0
 pointAng = 0
+laserShooting = 0
+laserX = 0
+laserY = 0
+laserAng = 0
 pygame.mouse.set_visible(0)
 
 while True:
@@ -100,27 +109,25 @@ while True:
         else: # Quadrant IV
             pointAng = abs(math.atan((mouseY - playerY) / (mouseX - (playerX - shipW/2))) * 180/math.pi - 90) + 180
 
+#   THE LASER
+    if mousedown == 1 and laserShooting == 0:
+        laserAng = pointAng
+        laserShooting = 1
+    if laserShooting == 1:
+        if mouseY < playerY:
+            if mouseX < playerX - shipW/2:
+                laserX = playerX - shipW/2 - (shipH * (math.cos(laserAng))) - laserW
+                laserY = playerY - shipH/2 - (shipH * (math.sin(laserAng))) - laserH
+                
+    if pressed [pygame.K_o]:
+        laserShooting = 0
+
     screen.fill([0,0,0])
     newShip = pygame.transform.rotate(ship, pointAng)
-    draw_obj(crosshair, mouseX - 25, mouseY - 25)
-    if pointAng == 0 or pointAng == 360:
-        print("0 or 360")
-        # draw_ship(screen, playerX - shipW/2, playerY - shipH/2)
-    elif pointAng > 0 and pointAng < 90:
-        print("between 0 and 90")
-    elif pointAng == 90:
-        print("90")
-    elif pointAng > 90 and pointAng < 180:
-        print("between 90 and 180")
-    elif pointAng == 180:
-        print("180")
-    elif pointAng > 180 and pointAng < 270:
-        print("between 180 and 270")
-    elif pointAng == 270:
-        print("270")
-    elif pointAng > 270 and pointAng < 360:
-        print("between 270 and 360")
+    newLaser = pygame.transform.rotate(laser, laserAng + 90)
+    draw_obj(crosshair, mouseX - shipW/2, mouseY - shipH/2)
     draw_obj(newShip, playerX - shipW, playerY - shipH/2)
+    draw_obj(newLaser, laserX, laserY)
     pygame.display.update()
     clock.tick(60)
     

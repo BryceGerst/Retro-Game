@@ -26,6 +26,12 @@ laser = pygame.transform.scale(laser, (laserW, laserH))
 def draw_obj(obj, x, y):
     screen.blit(obj, (x, y))
 
+def get_angle():
+    try:
+        return (math.atan((playerY- mouseY)/(mouseX - (playerX - shipW/2)))) * 180/math.pi
+    except ZeroDivisionError:
+        return -90
+
 pygame.init()
 enemiesKilled = 0
 smallBadBoyX = []
@@ -100,20 +106,20 @@ while True:
 
     if mouseY < playerY:
         if mouseX > playerX - shipW/2: # Quadrant I
-            pointAng = ((math.atan((playerY- mouseY)/(mouseX - (playerX - shipW/2)))) * 180/math.pi) + 270
+            pointAng =  get_angle() + 270
         else: # Quadrant II
-            pointAng = abs((((math.atan((playerY - mouseY)/((playerX-shipW/2) - mouseX)))) * 180/math.pi) - 90)
+            pointAng = get_angle() - 270
     else:
         if mouseX < playerX - shipW/2: # Quadrant III
-            pointAng = math.atan((mouseY - playerY) / ((playerX - shipW/2) - mouseX)) * 180/math.pi + 90
+            pointAng = get_angle() + 90
         else: # Quadrant IV
-            pointAng = abs(math.atan((mouseY - playerY) / (mouseX - (playerX - shipW/2))) * 180/math.pi - 90) + 180
+            pointAng = get_angle() - 90
 
 #   THE LASER
     if mousedown == 1 and laserShooting == 0:
-        laserAng = pointAng
         laserShooting = 1
     if laserShooting == 1:
+        laserAng = pointAng + 90
         if mouseY < playerY:
             if mouseX < playerX - shipW/2:
                 laserX = playerX - shipW/2 - (shipH * (math.cos(laserAng))) - laserW
@@ -124,7 +130,7 @@ while True:
 
     screen.fill([0,0,0])
     newShip = pygame.transform.rotate(ship, pointAng)
-    newLaser = pygame.transform.rotate(laser, laserAng + 90)
+    newLaser = pygame.transform.rotate(laser, laserAng)
     draw_obj(crosshair, mouseX - shipW/2, mouseY - shipH/2)
     draw_obj(newShip, playerX - shipW, playerY - shipH/2)
     draw_obj(newLaser, laserX, laserY)

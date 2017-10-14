@@ -104,17 +104,8 @@ while True:
         
 # DIRECTIONAL POINTING:
 
-    if mouseY < playerY:
-        if mouseX > playerX - shipW/2: # Quadrant I
-            pointAng =  get_angle() + 270
-        else: # Quadrant II
-            pointAng = get_angle() - 270
-    else:
-        if mouseX < playerX - shipW/2: # Quadrant III
-            pointAng = get_angle() + 90
-        else: # Quadrant IV
-            pointAng = get_angle() - 90
-
+    pointAng = get_angle() + 90 * ((mouseX < playerX - shipW/2) * 6 + (mouseX < playerX - shipW/2) * 4 - 5)
+    
 #   THE LASER
     if mousedown == 1 and laserShooting == 0:
         laserShooting = 1

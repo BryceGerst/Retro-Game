@@ -30,7 +30,7 @@ def get_angle():
     try:
         return (math.atan((playerY- mouseY)/(mouseX - (playerX - shipW/2)))) * 180/math.pi
     except ZeroDivisionError:
-        return -90
+        return 90 if playerY > mouseY else -90
 
 pygame.init()
 enemiesKilled = 0
@@ -112,9 +112,28 @@ while True:
     if laserShooting == 1:
         laserAng = pointAng + 90
         if mouseY < playerY:
+            # Quadrant II
             if mouseX < playerX - shipW/2:
-                laserX = playerX - shipW/2 - (shipH * (math.cos(laserAng))) - laserW
-                laserY = playerY - shipH/2 - (shipH * (math.sin(laserAng))) - laserH
+                laserX = playerX + shipW/2 - (shipH * (math.cos(-math.radians(laserAng + 180)))) - laserW
+                laserY = playerY + shipH/2 - (shipH * (math.sin(-math.radians(laserAng + 180)))) - laserH
+                laserShooting = 0
+            # Quadrant I
+            else:
+                laserX = playerX - shipW/2 - (shipH * (math.cos(-math.radians(laserAng + 180)))) - laserW
+                laserY = playerY + shipH/2 - (shipH * (math.sin(-math.radians(laserAng + 180)))) - laserH
+                laserShooting = 0
+        else:
+            # Quadrant III
+            if mouseX < playerX - shipW/2:
+                laserX = playerX + shipW/2 - (shipH * (math.cos(-math.radians(laserAng + 180)))) - laserW
+                laserY = playerY - shipH/2 - (shipH * (math.sin(-math.radians(laserAng + 180)))) - laserH
+                laserShooting = 0
+            # Quadrant IV
+            else:
+                laserX = playerX - shipW/2 - (shipH * (math.cos(-math.radians(laserAng + 180)))) - laserW
+                laserY = playerY - shipH/2 - (shipH * (math.sin(-math.radians(laserAng + 180)))) - laserH
+                laserShooting = 0
+            
                 
     if pressed [pygame.K_o]:
         laserShooting = 0
@@ -125,14 +144,10 @@ while True:
     draw_obj(crosshair, mouseX - shipW/2, mouseY - shipH/2)
     draw_obj(newShip, playerX - shipW, playerY - shipH/2)
     draw_obj(newLaser, laserX, laserY)
+    print(playerX)
+    print(playerY)
     pygame.display.update()
     clock.tick(60)
-    
-
-	
-
-
-
 
 
 

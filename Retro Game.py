@@ -10,6 +10,8 @@ ship = pygame.image.load("ship.png")
 ship = pygame.transform.scale(ship, (shipW ,shipH))
 laserW = int(1/64 * screenW)
 laserH = int(1/216 * screenH)
+laserSlope = 0
+repeat = 0
 
 badBoy = pygame.image.load("badboy.png")
 #badBoy = pygame.transform.scale(badBoy, (something,something))
@@ -109,6 +111,7 @@ while True:
 #   THE LASER
     if mousedown == 1 and laserShooting == 0:
         laserShooting = 1
+        laserSlope = (playerY - mouseY)/(playerX - mouseX)
     if laserShooting == 1:
         laserAng = pointAng + 90
         if mouseY < playerY:
@@ -116,23 +119,30 @@ while True:
             if mouseX < playerX - shipW/2:
                 laserX = playerX + shipW/2 - (shipH * (math.cos(-math.radians(laserAng + 180)))) - laserW
                 laserY = playerY + shipH/2 - (shipH * (math.sin(-math.radians(laserAng + 180)))) - laserH
-                laserShooting = 0
+                laserShooting = 2
             # Quadrant I
             else:
                 laserX = playerX - shipW/2 - (shipH * (math.cos(-math.radians(laserAng + 180)))) - laserW
                 laserY = playerY + shipH/2 - (shipH * (math.sin(-math.radians(laserAng + 180)))) - laserH
-                laserShooting = 0
+                laserShooting = 2
         else:
             # Quadrant III
             if mouseX < playerX - shipW/2:
                 laserX = playerX + shipW/2 - (shipH * (math.cos(-math.radians(laserAng + 180)))) - laserW
                 laserY = playerY - shipH/2 - (shipH * (math.sin(-math.radians(laserAng + 180)))) - laserH
-                laserShooting = 0
+                laserShooting = 2
             # Quadrant IV
             else:
                 laserX = playerX - shipW/2 - (shipH * (math.cos(-math.radians(laserAng + 180)))) - laserW
                 laserY = playerY - shipH/2 - (shipH * (math.sin(-math.radians(laserAng + 180)))) - laserH
-                laserShooting = 0
+                laserShooting = 2
+    if laserShooting == 2:
+        if laserX > -laserW and laserY > -laserH:
+            laserX -= 10
+            laserY -= 10 * laserSlope
+        else:
+            laserShooting = 0
+            
             
                 
     if pressed [pygame.K_o]:
@@ -144,8 +154,6 @@ while True:
     draw_obj(crosshair, mouseX - shipW/2, mouseY - shipH/2)
     draw_obj(newShip, playerX - shipW, playerY - shipH/2)
     draw_obj(newLaser, laserX, laserY)
-    print(playerX)
-    print(playerY)
     pygame.display.update()
     clock.tick(60)
 
